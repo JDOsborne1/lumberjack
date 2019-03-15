@@ -37,7 +37,7 @@ daymatch <- "--(\\S*)--"
 timematch <- "(\\d{2}:\\d{2})"
 flagmatch <- "\\d{2}:\\d{2} (FLAG):"
 jobnomatch <- "\\(\\S*\\)$"
-logmatch <- "\\d{2} (\\S*) \\("
+logmatch <- "\\d{2} ([\\s*\\S*]*) \\("
                 
 linedf3 <- linedf2 %>%
     mutate(basedate = str_match(files[[1]], "\\d{2}-\\d{2}-\\d{2}"),
@@ -45,7 +45,7 @@ linedf3 <- linedf2 %>%
            timeval = ifelse(grepl(timematch,rawlog), str_match(rawlog, timematch), NA),
            jobval = ifelse(grepl(jobnomatch,rawlog), str_match(rawlog, jobnomatch), NA),
            flagval = grepl(flagmatch, rawlog),
-           log = ifelse(grepl(logmatch,rawlog), str_match(rawlog, logmatch)[,2], NA))
+           log = str_match(rawlog, logmatch)[,2])
 
 
 linedf4 <- linedf3 %>%
