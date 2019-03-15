@@ -20,7 +20,7 @@ reassign_date <- function(BadDateTS, NewDate){
     return(BadDateTS)
 }
 
-log_extractor <- function(lines){
+log_extractor <- function(lines, basedate_file){
     require(dplyr)
     require(stringr)
     require(lubridate)
@@ -40,12 +40,13 @@ jobnomatch <- "\\(\\S*\\)$"
 logmatch <- "\\d{2} ([\\s*\\S*]*) \\("
                 
 linedf3 <- linedf2 %>%
-    mutate(basedate = str_match(files[[1]], "\\d{2}-\\d{2}-\\d{2}"),
+    mutate(basedate = str_match(basedate_file, "\\d{2}-\\d{2}-\\d{2}"),
            dayval = ifelse(grepl(daymatch,rawlog), str_match(rawlog, daymatch), NA),
            timeval = ifelse(grepl(timematch,rawlog), str_match(rawlog, timematch), NA),
            jobval = ifelse(grepl(jobnomatch,rawlog), str_match(rawlog, jobnomatch), NA),
            flagval = grepl(flagmatch, rawlog),
-           log = str_match(rawlog, logmatch)[,2])
+           log = str_match(rawlog, logmatch)[,2]) %>%
+    filter(!is.na(timeval)| !is.na(dayval))
 
 
 linedf4 <- linedf3 %>%
@@ -56,7 +57,7 @@ linedf4 <- linedf3 %>%
 
 linedf5 <- linedf4 %>%
     filter(!is.na(timeval)) %>%
-    select(timestamp, log, flagval)
+    select(timestamp, log, flagval, jobval)
 
 return(linedf5)
 }

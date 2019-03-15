@@ -2,11 +2,21 @@
 library(tidyverse)
 library(readr)
 
-files <- list.files(path = getwd(), pattern = ".txt")
-lines <- as.vector(read_lines(files[[1]]))
+source("data_transform.R")
 
-x <- log_extractor(lines)
+logpath <- "C:/Users/j_osborne/Documents/JDO-Logs/"
 
-write_csv(x,"logfile.csv")
+files <- list.files(path = logpath, pattern = ".txt")
 
-test <- read_csv("logfile.csv")
+logfile <- read_csv(paste0(logpath,"logfile.csv")) %>% as.data.frame()
+maxdate <- ifelse(nrow(logfile) == 0, -Inf,  max(logfile$timestamp, na.rm = T))
+newlogs <- as.Date(str_match(files, "\\d{2}-\\d{2}-\\d{2}"), format = "%d-%m-%y") > maxdate
+files <- files[newlogs]
+
+for (i in files){
+lines <- as.vector(read_lines(paste0(logpath, i)))
+x <- log_extractor(lines, i)
+logfile <- rbind(logfile, x)
+}
+
+write_csv(logfile,paste0(logpath,"logfile.csv"))
