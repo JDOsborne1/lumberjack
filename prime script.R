@@ -19,4 +19,4 @@ x <- log_extractor(lines, i)
 logfile <- rbind(logfile, x)
 }
 
-write_csv(logfile,paste0(logpath,"logfile.csv"))
+write_csv(logfile, paste0(logpath,"logfile.csv"))
