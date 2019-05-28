@@ -56,8 +56,13 @@ linedf4 <- linedf3 %>%
            timestamp = reassign_date(time_as_if_today, datestamp))
 
 linedf5 <- linedf4 %>%
-    filter(!is.na(timeval)) %>%
-    select(timestamp, log, flagval, jobval)
+    mutate(timelead = lead(timestamp, default = linedf4[nrow(linedf4),"timestamp"])) %>%
+    mutate(timediff = (timelead - timestamp))
 
-return(linedf5)
+linedf6 <- linedf5 %>%
+    filter(!is.na(timeval)) %>%
+    select(timestamp, log, flagval, jobval, timediff)
+
+
+return(linedf6)
 }
