@@ -9,6 +9,7 @@ logpath <- "C:/Users/j_osborne/Documents/JDO-Logs/"
 files <- list.files(path = logpath, pattern = ".txt")
 
 logfile <- read_csv(paste0(logpath,"logfile.csv")) %>% as.data.frame()
+logfile <- head(logfile, 0)
 
 if (nrow(logfile) == 0){
     maxdate <- as.Date("2000-01-01")
