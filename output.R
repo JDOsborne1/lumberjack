@@ -3,27 +3,25 @@ library(lubridate)
 library(viridis)
 
 
-Logfile <- logfile %>%
-  filter(!is.na(log)) %>% 
-  rename(Timestamp = timestamp, Log = log, JobNumber = jobval, Flag = flagval)  #%>%
-#  filter(as.Date(Timestamp) > Sys.Date() - days(6))
 
-Log_Summary <- Logfile %>%
-  mutate(Timelead = lead(Timestamp, default = Logfile[nrow(Logfile["Log"]),"Timestamp"])) %>%
-  mutate(Timediff = (Timelead - Timestamp)  
-         , Day = lubridate::wday(Timestamp, label = T) 
+Log_Summary <- logfile %>%
+  rename(Timestamp = timestamp, Log = log, JobNumber = jobval, Flag = flagval, Timediff = timediff)  %>%
+  filter(Timestamp > as.Date("2019-07-22")) %>% 
+  mutate(
+         Day = lubridate::wday(Timestamp, label = T) 
          , Pretty.Date = format(as.Date(Timestamp), "%d-%b")
          ) %>%
   group_by(Pretty.Date, JobNumber) %>%
-  summarise(Timeseg = as.integer(sum(Timediff)),Seconds_spent = lubridate::as.duration(Timeseg), Day = max(Day)) %>%
-  filter(JobNumber != "(-)")
+  summarise(Timeseg = as.integer(sum(Timediff)),Seconds.Spent = lubridate::as.duration(Timeseg), Day = max(Day)) %>%
+  filter(JobNumber != "(-)") %>% 
+  select(Pretty.Date, Day, JobNumber, Seconds.Spent)
 
-Beginning <- as.Date(min(Logfile$Timestamp))
+
 
 Plot_Dat <- Log_Summary %>%
-  rename(xBin = Pretty.Date, yRate1 = Timeseg, yBin = JobNumber) %>%
+  rename(xBin = Pretty.Date, yRate1 = Seconds.Spent, yBin = JobNumber) %>%
   mutate(yRatemin = yRate1/3600)
-PlotTit <- paste0("Jobnumber composition of work time for ",Beginning)
+PlotTit <- paste0("Jobnumber composition of work time for ",unique(Log_Summary$Pretty.Date)[1])
 PlotSubTit <- "Breakdown of hours spent in work by the Jobnumber of the billed time"
 xlab <-  "Day of the Week"
 ylab <- "Hours in the Day"

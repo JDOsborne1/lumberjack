@@ -66,3 +66,18 @@ linedf6 <- linedf5 %>%
 
 return(linedf6)
 }
+
+
+aggregateJobs <- function(df){
+  df %>% 
+    mutate(JobNumber = case_when(
+      JobNumber == "(AzzuriSegmentationInternal)" ~ "(INTERNAL)" 
+      , JobNumber == "(INTERNALAttribution)" ~ "(INTERNAL)" 
+      , JobNumber == "(OpenData)" ~ "(INTERNAL)" 
+      , JobNumber == "(INFOSEC)" ~ "(INTERNAL)" 
+      , JobNumber == "(JN00000)" ~ "(ADMIN)" 
+      , JobNumber == "(TIMESHEETS)" ~ "(ADMIN)" 
+      , TRUE ~ JobNumber 
+    )) %>% 
+    return()
+}
