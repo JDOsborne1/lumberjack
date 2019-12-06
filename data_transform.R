@@ -21,16 +21,14 @@ reassign_date <- function(BadDateTS, NewDate){
 }
 
 log_extractor <- function(lines, basedate_file){
-    require(dplyr)
-    require(stringr)
-    require(lubridate)
-    require(zoo)
+    library(dplyr)
+    library(stringr)
+    library(lubridate)
+    library(zoo)
 
-linedf <- lines %>% 
-    as.data.frame() 
-    
-linedf2 <-
-    rename(linedf, rawlog = .)
+linedf2 <- lines %>% 
+    enframe(name = NULL, value = "rawlog")
+
 
 # Set of regexes
 daymatch <- "--(\\S*)--"
@@ -38,15 +36,20 @@ timematch <- "(\\d{2}:\\d{2})"
 flagmatch <- "\\d{2}:\\d{2} (FLAG):"
 jobnomatch <- "\\(\\S*\\)$"
 logmatch <- "\\d{2} ([\\s*\\S*]*) \\("
-                
+
+ref_date <- str_match(basedate_file, "\\d{2}-\\d{2}-\\d{2}")[[1]]                
+
 linedf3 <- linedf2 %>%
-    mutate(basedate = str_match(basedate_file, "\\d{2}-\\d{2}-\\d{2}"),
-           dayval = ifelse(grepl(daymatch,rawlog), str_match(rawlog, daymatch), NA),
-           timeval = ifelse(grepl(timematch,rawlog), str_match(rawlog, timematch), NA),
-           jobval = ifelse(grepl(jobnomatch,rawlog), str_match(rawlog, jobnomatch), NA),
-           flagval = grepl(flagmatch, rawlog),
-           log = str_match(rawlog, logmatch)[,2]) %>%
-    filter(!is.na(timeval)| !is.na(dayval))
+    mutate(
+       basedate = ref_date
+      ,
+      dayval = ifelse(grepl(daymatch,rawlog), str_match(rawlog, daymatch), NA),
+      timeval = ifelse(grepl(timematch,rawlog), str_match(rawlog, timematch), NA),
+      jobval = ifelse(grepl(jobnomatch,rawlog), str_match(rawlog, jobnomatch), NA),
+      flagval = grepl(flagmatch, rawlog),
+      log = str_match(rawlog, logmatch)[,2]
+      ) %>%
+filter(!is.na(timeval)| !is.na(dayval))
 
 
 linedf4 <- linedf3 %>%
@@ -77,6 +80,11 @@ aggregateJobs <- function(df){
       , JobNumber == "(INFOSEC)" ~ "(INTERNAL)" 
       , JobNumber == "(JN00000)" ~ "(ADMIN)" 
       , JobNumber == "(TIMESHEETS)" ~ "(ADMIN)" 
+      , JobNumber == "(DefenderKMI)" ~ "(DefenderKMIs)"
+      , JobNumber == "(TechcorneR)" ~ "(INTERNAL)"
+      , JobNumber == "(FridBrek)" ~ "(INTERNAL)"
+      , JobNumber == "(EvoqueButton)" ~ "(DefenderButton)"
+      , JobNumber == "(DefenderButtonBrief)" ~ "(DefenderButton)"
       , TRUE ~ JobNumber 
     )) %>% 
     return()
