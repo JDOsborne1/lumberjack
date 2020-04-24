@@ -33,7 +33,7 @@ linedf2 <- lines %>%
 # Set of regexes
 daymatch <- "--(\\S*)--"
 timematch <- "(\\d{2}:\\d{2})"
-flagmatch <- "\\d{2}:\\d{2} (FLAG):"
+flagmatch <- "\\d{2}:\\d{2} (TODO):"
 jobnomatch <- "\\(\\S*\\)$"
 logmatch <- "\\d{2} ([\\s*\\S*]*) \\("
 
@@ -78,14 +78,33 @@ aggregateJobs <- function(df){
       , JobNumber == "(INTERNALAttribution)" ~ "(INTERNAL)" 
       , JobNumber == "(OpenData)" ~ "(INTERNAL)" 
       , JobNumber == "(INFOSEC)" ~ "(INTERNAL)" 
+      , JobNumber == "(HelpDesk)" ~ "(INTERNAL)" 
       , JobNumber == "(JN00000)" ~ "(ADMIN)" 
-      , JobNumber == "(TIMESHEETS)" ~ "(ADMIN)" 
+      , JobNumber == "(Jn00000)" ~ "(ADMIN)" 
+      , JobNumber == "(TIMESHEETS)" ~ "(ForceAdmin)" 
       , JobNumber == "(DefenderKMI)" ~ "(DefenderKMIs)"
       , JobNumber == "(TechcorneR)" ~ "(INTERNAL)"
       , JobNumber == "(FridBrek)" ~ "(INTERNAL)"
       , JobNumber == "(EvoqueButton)" ~ "(DefenderButton)"
       , JobNumber == "(DefenderButtonBrief)" ~ "(DefenderButton)"
+      , JobNumber == "(CustomerJourney)" ~ "(INTERNAL)"
+      , JobNumber == "(CustomerJourneys)" ~ "(INTERNAL)"
+      , JobNumber == "(Internal)" ~ "(INTERNAL)"
+      , JobNumber == "(TeamConn)" ~ "(INTERNAL)"
+      , JobNumber == "(Handover)" ~ "(INTERNAL)"
+      , JobNumber == "(HANDOVER)" ~ "(INTERNAL)"
+      , JobNumber == "(GDPRErasure)" ~ "(INTERNAL)"
+      , JobNumber == "(Filesystems)" ~ "(INTERNAL)"
+      , JobNumber == "(StreetVista)" ~ "(INTERNAL)"
+      , JobNumber == "(LRE_Regular_Ext)" ~ "(PR-001571 - LRE Retention Ongoing)"
+      , JobNumber == "(LRERegular)" ~ "(PR-001571 - LRE Retention Ongoing)"
+      , JobNumber == "(LRERetirement)" ~ "(PR-001571 - LRE Retention Ongoing)"
+      , JobNumber == "(StratStand)" ~ "(PR-000458 Strategic Stand Ups)"
+      , JobNumber == "(PR-001704)" ~ "(PR-001780 Jan Newsletter PCA)"
+      , JobNumber == "(JLAIntro)" ~ "(JLADSReview)"
+      , JobNumber == "(LeadValue)" ~ "(PR-000467)"
       , TRUE ~ JobNumber 
     )) %>% 
+    # mutate_at(vars(JobNumber), toupper) %>% 
     return()
 }

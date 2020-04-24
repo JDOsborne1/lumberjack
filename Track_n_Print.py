@@ -14,7 +14,7 @@ from datetime import timedelta as tdel
 
 ##Body
 #Sets up day specific variables
-path = "C:/Users/j_osborne/JDO-Logs/"+(dt.now() - tdel(days=dt.now().weekday())).strftime("%d-%m-%y") + ".txt"
+path = "C:/Users/joseph.osborne/Logging/"+(dt.now() - tdel(days=dt.now().weekday())).strftime("%d-%m-%y") + ".txt"
 morn = input("Day Begin? y for yes ")
 if morn == "y":
     with open(path, "a") as f:
