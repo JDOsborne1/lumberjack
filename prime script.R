@@ -57,7 +57,7 @@ Log_Summary <- logfile %>%
   filter(!JobNumber %in% c("(-)")) %>% 
   select(Pretty.Date, Day, JobNumber, Seconds.Spent, All.Logs) %>% 
   mutate(Hours.Spent = Seconds.Spent/dhours(1))
-View(Log_Summary)
+View(Log_Summary %>% arrange(JobNumber, Day))
 
 Log_Summary %>% 
   group_by(Day) %>% 
@@ -65,7 +65,7 @@ Log_Summary %>%
   summarise(Day.Worked = sum(Hours.Spent, na.rm = T)) %>% pull(Day.Worked) %>% sum(na.rm = T)
 Log_Summary %>% 
   group_by(JobNumber) %>% 
-  summarise(Total.Time = sum(Hours.Spent))
+  summarise(Total.Time = sum(Hours.Spent)) 
 
 
 Tasks <- logfile %>% 
