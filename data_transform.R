@@ -99,10 +99,14 @@ aggregateJobs <- function(df){
       , JobNumber == "(LRE_Regular_Ext)" ~ "(PR-001571 - LRE Retention Ongoing)"
       , JobNumber == "(LRERegular)" ~ "(PR-001571 - LRE Retention Ongoing)"
       , JobNumber == "(LRERetirement)" ~ "(PR-001571 - LRE Retention Ongoing)"
-      , JobNumber == "(StratStand)" ~ "(PR-000458 Strategic Stand Ups)"
+      , JobNumber == "(StratStand)" ~ "(Scrum - Sprint Meetings)"
+      , JobNumber == "(StandUps)" ~ "(Scrum - Sprint Meetings)"
+      , JobNumber == "(PR000078)" ~ "(Scrum - Sprint Meetings)"
+      , JobNumber == "(PR-002162)" ~ "(Scrum - Sprint Meetings)"
+      , JobNumber == "(JLRStrategy)" ~ "(PR-002145 JLR BAU)"
       , JobNumber == "(PR-001704)" ~ "(PR-001780 Jan Newsletter PCA)"
       , JobNumber == "(JLAIntro)" ~ "(JLADSReview)"
-      , JobNumber == "(LeadValue)" ~ "(PR-000467)"
+      , JobNumber == "(LeadValue)" ~ "(PR-002145 JLR BAU)"
       , TRUE ~ JobNumber 
     )) %>% 
     # mutate_at(vars(JobNumber), toupper) %>% 
